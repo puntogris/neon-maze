@@ -11,4 +11,5 @@ interface IRepository {
     fun createPlayerFirestore(): Cell
     fun deletePlayerFirestore(playerId :String)
     fun getMazeSeedFirestore():FirestoreDocumentLiveData
+    fun setNewMazeSeedFirestore()
 }

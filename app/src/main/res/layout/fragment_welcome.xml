@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="welcomeFragment"
+            type="com.puntogris.neonmaze.ui.WelcomeFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,14 +21,15 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="136dp"
             android:backgroundTint="@color/colorPrimary"
-            android:text="Join maze"
+            android:text="@string/join_maze"
+            android:onClick="@{() -> welcomeFragment.fetchMazeInformationFromDatabase()}"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/welcomeFragmentTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="148dp"
@@ -49,12 +52,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/loadingMaze"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:textColor="@android:color/white"
-            android:text="Joining maze.."
+            android:text="@string/loading_maze_message"
             android:textSize="18sp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"

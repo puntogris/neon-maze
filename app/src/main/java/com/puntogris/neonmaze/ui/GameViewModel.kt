@@ -18,7 +18,7 @@ class GameViewModel: ViewModel() {
     private val _playerCell = MutableLiveData<Cell>()
      val playerCell: LiveData<Cell> = _playerCell
 
-    var playerHasMoved = false
+    private var playerHasMoved = false
 
     val maze = Transformations.switchMap(seed){ newSeed ->
         liveData { emit(Maze(_playerCell.value!!, newSeed).createMaze()) }
@@ -52,15 +52,18 @@ class GameViewModel: ViewModel() {
     fun updatePlayerPos(player: Cell){
         _playerCell.value!!.col = player.col
         _playerCell.value!!.row = player.row
-
         playerHasMoved = true
     }
 
-    fun checkIfPlayerFoundExit(player: Cell)=
+    fun playerFoundExit(player: Cell)=
         Maze(playerCell.value!!, seed.value!!).checkExit(player)
 
     fun stopTimer(){
         startTimer.cancel()
+    }
+
+    fun setNewSeed(){
+        repo.setNewMazeSeedFirestore()
     }
 
 

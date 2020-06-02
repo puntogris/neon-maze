@@ -1,5 +1,6 @@
 package com.puntogris.neonmaze.data
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.puntogris.neonmaze.livedata.FirestoreDocumentLiveData
@@ -42,6 +43,10 @@ class Repository: IRepository{
     override fun getMazeSeedFirestore(): FirestoreDocumentLiveData {
         val ref = firestore.collection("maze").document("information")
         return FirestoreDocumentLiveData(ref)
+    }
+
+    override fun setNewMazeSeedFirestore() {
+        firestore.collection("maze").document("information").update("seed", FieldValue.increment(1))
     }
 
 }

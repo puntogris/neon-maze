@@ -4,12 +4,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import java.util.*
 
-class Maze(player: Cell,seed: Long) {
+class Maze(private val player: Cell,seed: Long) {
     private val mazeCols = 10
     private val mazeRows = 17
-    private val exit = Cell(9,16)
-    private var cells: Array<Array<Cell>>  = Array(mazeCols) {Array(mazeRows) {Cell()} }
- //   private var seed = 1.toLong()
+    private val exit = Cell(mazeCols - 1,mazeRows - 1)
+    private val cells: Array<Array<Cell>>  = Array(mazeCols) {Array(mazeRows) {Cell()} }
     private var random:Random = Random(seed)
 
     fun createMaze(): Array<Array<Cell>>{
@@ -19,7 +18,7 @@ class Maze(player: Cell,seed: Long) {
 
         for(col in 0 until mazeCols){
             for(row in 0 until mazeRows){
-                cells[col][row] = Cell(col, row)
+                cells[col][row] = Cell(col, row, player.id,player.color)
             }
         }
 
@@ -36,8 +35,8 @@ class Maze(player: Cell,seed: Long) {
             }else{
                 current = stack.pop()
             }
-        }while (!stack.empty())
 
+        }while (!stack.empty())
         return cells
     }
 
@@ -96,16 +95,9 @@ class Maze(player: Cell,seed: Long) {
         }
     }
 
-    fun drawMazeExit(canvas: Canvas,cellSize:Float, marginMazeScreen:Float, exitPaint:Paint){
-        canvas.drawRect(
-            exit.col * cellSize + marginMazeScreen,
-            exit.row * cellSize + marginMazeScreen,
-            (exit.col + 1) * cellSize - marginMazeScreen,
-            (exit.row + 1) * cellSize - marginMazeScreen,
-            exitPaint
-        )
-    }
 
-    fun checkExit(player:Cell) = mazeRows - 1 == player.row && mazeCols - 1 == player.col
+
+    fun checkExit(player:Cell) = player.col == exit.col && player.row == exit.row
+
 
 }
