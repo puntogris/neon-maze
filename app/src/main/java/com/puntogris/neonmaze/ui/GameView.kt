@@ -51,7 +51,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
         playerCell.value?.drawPlayerCell(canvas, cellSize, marginMazeScreen)
 
         playersOnline.value?.forEach{ player ->
-            if (player.id != playerCell.value?.id)
+            if (notCurrentPlayer(player))
                 player.drawPlayerCell(canvas, cellSize, marginMazeScreen)
         }
     }
@@ -69,6 +69,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
         exit = Cell(mazeCols - 1, mazeRows - 1)
         invalidate()
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -98,7 +99,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
     }
 
     fun restartPlayerPosition(){
-        _playerCell.postValue(mazeCells!![0][0])
+        _playerCell.value = mazeCells!![0][0]
         invalidate()
     }
 
@@ -106,5 +107,8 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
         playersOnline.value = newPlayersOnline
         invalidate()
     }
+
+    //Checks in order to not draw the current player when it draws all the online players
+    private fun notCurrentPlayer(onlinePlayer: Cell)= onlinePlayer.id != playerCell.value?.id
 
 }

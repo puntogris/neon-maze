@@ -14,7 +14,7 @@ import com.puntogris.neonmaze.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
     private val viewModel: GameViewModel by activityViewModels()
-    private lateinit var binding:FragmentWelcomeBinding
+    private lateinit var binding: FragmentWelcomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,11 +23,9 @@ class WelcomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_welcome, container, false)
 
         binding.welcomeFragment = this
-        viewModel.currentMaze.observe(viewLifecycleOwner, Observer {})
 
         return binding.root
     }
-
 
     private fun navigateToMazeFragment(){
         findNavController().navigate(R.id.action_welcomeFragment_to_mazeFragment)

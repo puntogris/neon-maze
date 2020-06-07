@@ -50,9 +50,12 @@ class GameViewModel: ViewModel() {
         FirestoreQueryCellTransformation.transform(repo.getAllPlayers())
 
     fun updatePlayerPos(player: Cell){
-        playerCell.value!!.col = player.col
-        playerCell.value!!.row = player.row
-        playerState = HasNewMoves
+        playerCell.value?.run {
+            col = player.col
+            row = player.row
+            playerState = HasNewMoves
+        }
+
     }
 
     fun playerFoundExit(player: Cell)=
