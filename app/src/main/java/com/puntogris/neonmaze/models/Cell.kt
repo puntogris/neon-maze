@@ -5,9 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Parcelable
+import android.view.MotionEvent
+import com.puntogris.neonmaze.utils.Direction
 import com.puntogris.neonmaze.utils.Utils
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import kotlin.math.abs
 
 @Parcelize
 class Cell(var col:Int = 0, var row: Int = 0,var id:String = "",var color: String = "#ffffff") :
@@ -75,6 +78,29 @@ class Cell(var col:Int = 0, var row: Int = 0,var id:String = "",var color: Strin
             (row + 1) * cellSize - marginMazeScreen,
             Utils.exitPaint
         )
+    }
+
+    fun getMoveDirection(event: MotionEvent, cellSize: Float, hMargin: Float, vMargin: Float): Direction{
+        val x: Float = event.x
+        val y: Float = event.y
+        val playerCenterX: Float = hMargin + (col + 0.5f)*cellSize
+        val playerCenterY: Float = vMargin + (row + 0.5f)*cellSize
+        val dx: Float = x - playerCenterX
+        val dy: Float = y - playerCenterY
+        val absDx: Float = abs(dx)
+        val absDy: Float = abs(dy)
+
+        return if (absDx > cellSize || absDy > cellSize){
+            if(absDx > absDy)
+            //move in x direction
+                if(dx > 0) Direction.RIGHT
+                else Direction.LEFT
+            else
+            //move in y direction
+                if(dy > 0) Direction.DOWN
+                else Direction.UP
+        }
+        else Direction.NONE
     }
 
 

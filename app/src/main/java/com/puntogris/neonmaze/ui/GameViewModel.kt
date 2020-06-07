@@ -6,33 +6,33 @@ import com.puntogris.neonmaze.data.FirestoreQueryCellTransformation
 import com.puntogris.neonmaze.data.Repository
 import com.puntogris.neonmaze.models.Cell
 import com.puntogris.neonmaze.models.Maze
+import com.puntogris.neonmaze.utils.PlayerStates
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
+import com.puntogris.neonmaze.utils.PlayerStates.*
 
 class GameViewModel: ViewModel() {
     private val repo = Repository()
-
     private val _seed = MutableLiveData<Long>()
-    val seed: LiveData<Long> = _seed
+    private val seed:LiveData<Long> = _seed
+    private val playerCell = MutableLiveData<Cell>()
+    private var playerState: PlayerStates = HasNewMoves
 
-    private val _playerCell = MutableLiveData<Cell>()
-     val playerCell: LiveData<Cell> = _playerCell
-
-    private var playerHasMoved = false
-
-    val maze = Transformations.switchMap(seed){ newSeed ->
-        liveData { emit(Maze(_playerCell.value!!, newSeed).createMaze()) }
+    val currentMaze = Transformations.switchMap(seed){ newSeed ->
+        liveData { emit(Maze(playerCell.value!!, newSeed).createMaze()) }
     }
-
-    val startTimer: TimerTask =
+    //This will run every 1 second and check if the player has changed position
+    //With this we limit the write speed to the database, 1 write per second per document
+    val timerDatabaseUpdated: TimerTask =
          Timer().scheduleAtFixedRate(0,1000){
-            if (playerHasMoved)
-                repo.updatePlayerPosition(playerCell.value!!)
-            playerHasMoved = false
+            if (playerState is HasNewMoves){
+                playerCell.value?.run { repo.updatePlayerPosition(this) }
+                playerState = NotNewMoves
+            }
         }
 
     fun createPlayer(){
-        _playerCell.postValue(repo.createPlayerFirestore())
+        playerCell.postValue(repo.createPlayerFirestore())
     }
 
     fun deletePlayer(){ repo.deletePlayerFirestore(playerCell.value!!.id) }
@@ -50,21 +50,20 @@ class GameViewModel: ViewModel() {
         FirestoreQueryCellTransformation.transform(repo.getAllPlayers())
 
     fun updatePlayerPos(player: Cell){
-        _playerCell.value!!.col = player.col
-        _playerCell.value!!.row = player.row
-        playerHasMoved = true
+        playerCell.value!!.col = player.col
+        playerCell.value!!.row = player.row
+        playerState = HasNewMoves
     }
 
     fun playerFoundExit(player: Cell)=
         Maze(playerCell.value!!, seed.value!!).checkExit(player)
 
     fun stopTimer(){
-        startTimer.cancel()
+        timerDatabaseUpdated.cancel()
     }
 
     fun setNewSeed(){
         repo.setNewMazeSeedFirestore()
     }
-
 
 }

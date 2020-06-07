@@ -7,6 +7,9 @@
         <variable
             name="welcomeFragment"
             type="com.puntogris.neonmaze.ui.WelcomeFragment" />
+        <variable
+            name="viewModel"
+            type="com.puntogris.neonmaze.ui.GameViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,12 +20,12 @@
 
         <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="136dp"
+            android:layout_width="170dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="92dp"
             android:backgroundTint="@color/colorPrimary"
-            android:text="@string/join_maze"
             android:onClick="@{() -> welcomeFragment.fetchMazeInformationFromDatabase()}"
+            android:text="@string/join_maze"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="148dp"
-            android:text="Neon Maze"
+            android:text="@string/app_name"
             android:textColor="@android:color/white"
             android:textSize="29sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +48,6 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,9 +61,16 @@
             android:textColor="@android:color/white"
             android:text="@string/loading_maze_message"
             android:textSize="18sp"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/loadingGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:constraint_referenced_ids="loadingMaze,progressBar" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -7,13 +7,6 @@
         android:id="@+id/mazeFragment"
         android:name="com.puntogris.neonmaze.ui.MazeFragment"
         android:label="MazeFragment" >
-        <argument
-            android:name="playerCell"
-            app:argType="com.puntogris.neonmaze.models.Cell" />
-        <argument
-            android:name="mazeSeed"
-            app:argType="long"
-            android:defaultValue="0L" />
     </fragment>
     <fragment
         android:id="@+id/welcomeFragment"
