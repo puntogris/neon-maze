@@ -17,7 +17,7 @@ class FirestoreDocumentLiveData(private val documentReference: DocumentReference
     }
 
     override fun onEvent(snapshot: DocumentSnapshot?, e: FirebaseFirestoreException?) {
-        postValue(snapshot)
+        postValue(snapshot!!)
     }
 
 }
