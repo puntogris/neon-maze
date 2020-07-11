@@ -8,5 +8,6 @@ Used in this project:</br>
   * Recursive Backtracking
   * MVVM
   
+# Screenshots
 ![N|Solid](https://github.com/puntogris/neon-maze/blob/master/screenshots/1.webp)
 ![N|Solid](https://github.com/puntogris/neon-maze/blob/master/screenshots/2.webp)
