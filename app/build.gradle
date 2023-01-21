@@ -5,6 +5,8 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -45,6 +47,7 @@ ext {
     firebase_firestore = "21.4.3"
     dagger = "2.28"
     livedata = "2.6.0-alpha04"
+    hiltVersion = "2.43.2"
 }
 
 dependencies {
@@ -77,4 +80,8 @@ dependencies {
 
     //LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$livedata"
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
 }

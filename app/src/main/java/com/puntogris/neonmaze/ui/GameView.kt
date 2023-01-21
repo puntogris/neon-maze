@@ -7,14 +7,13 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.graphics.component1
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.puntogris.neonmaze.R
 import com.puntogris.neonmaze.models.Cell
 import com.puntogris.neonmaze.utils.Direction
 import com.puntogris.neonmaze.utils.Utils
-import kotlin.math.abs
+
 class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
 
     private lateinit var exit: Cell

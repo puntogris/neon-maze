@@ -8,7 +8,9 @@ import androidx.navigation.fragment.findNavController
 import com.puntogris.neonmaze.R
 import com.puntogris.neonmaze.databinding.FragmentWelcomeBinding
 import com.puntogris.neonmaze.utils.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
     private val viewModel: GameViewModel by activityViewModels()

@@ -7,8 +7,9 @@ import com.puntogris.neonmaze.livedata.FirestoreDocumentLiveData
 import com.puntogris.neonmaze.livedata.FirestoreQueryLiveData
 import com.puntogris.neonmaze.models.Cell
 import com.puntogris.neonmaze.utils.Utils
+import javax.inject.Inject
 
-class Repository : IRepository {
+class Repository @Inject constructor() : IRepository {
 
     private val firestore = Firebase.firestore
 

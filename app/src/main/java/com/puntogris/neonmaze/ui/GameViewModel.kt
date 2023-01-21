@@ -10,10 +10,12 @@ import com.puntogris.neonmaze.utils.PlayerStates
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 import com.puntogris.neonmaze.utils.PlayerStates.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class GameViewModel: ViewModel() {
+@HiltViewModel
+class GameViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    private val repo = Repository()
     private val _seed = MutableLiveData<Long>()
     private val seed:LiveData<Long> = _seed
     private val playerCell = MutableLiveData<Cell>()
@@ -27,19 +29,19 @@ class GameViewModel: ViewModel() {
     val timerDatabaseUpdated: TimerTask =
          Timer().scheduleAtFixedRate(0,1000){
             if (playerState is HasNewMoves){
-                playerCell.value?.run { repo.updatePlayerPosition(this) }
+                playerCell.value?.run { repository.updatePlayerPosition(this) }
                 playerState = NotNewMoves
             }
         }
 
     fun createPlayer(){
-        playerCell.postValue(repo.createPlayerFirestore())
+        playerCell.postValue(repository.createPlayerFirestore())
     }
 
-    fun deletePlayer(){ repo.deletePlayerFirestore(playerCell.value!!.id) }
+    fun deletePlayer(){ repository.deletePlayerFirestore(playerCell.value!!.id) }
 
     fun getMazeSeed():LiveData<Long>{
-        val data = repo.getMazeSeedFirestore()
+        val data = repository.getMazeSeedFirestore()
         return FirestoreMazeDeserializerTransformation.transform(data)
     }
 
@@ -48,7 +50,7 @@ class GameViewModel: ViewModel() {
     }
 
     fun getPlayersOnline():LiveData<List<Cell>> =
-        FirestoreQueryCellTransformation.transform(repo.getAllPlayers())
+        FirestoreQueryCellTransformation.transform(repository.getAllPlayers())
 
     fun updatePlayerPos(player: Cell){
         playerCell.value?.run {
@@ -67,6 +69,6 @@ class GameViewModel: ViewModel() {
     }
 
     fun setNewSeed(){
-        repo.setNewMazeSeedFirestore()
+        repository.setNewMazeSeedFirestore()
     }
 }

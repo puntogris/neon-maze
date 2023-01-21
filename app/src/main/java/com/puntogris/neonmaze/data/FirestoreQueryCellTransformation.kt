@@ -7,7 +7,6 @@ import com.puntogris.neonmaze.livedata.FirestoreQueryLiveData
 import com.puntogris.neonmaze.models.Cell
 
 object FirestoreQueryCellTransformation {
-
     fun transform(liveData: FirestoreQueryLiveData): LiveData<List<Cell>>  {
         return Transformations.map(liveData) { snap: List<DocumentSnapshot?> ->
             snap.map { cell ->

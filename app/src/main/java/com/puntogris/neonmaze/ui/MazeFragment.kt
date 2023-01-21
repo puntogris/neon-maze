@@ -5,41 +5,43 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.puntogris.neonmaze.R
 import com.puntogris.neonmaze.databinding.FragmentMazeBinding
 import com.puntogris.neonmaze.utils.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-class MazeFragment : Fragment() {
+@AndroidEntryPoint
+class MazeFragment : Fragment(R.layout.fragment_maze) {
+
     private val viewModel: GameViewModel by activityViewModels()
-
     private val binding by viewBinding(FragmentMazeBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.timerDatabaseUpdated.run()
+        setupObservers()
+    }
 
-        binding.apply {
-            viewModel.timerDatabaseUpdated.run()
-
-            viewModel.getPlayersOnline().observe(viewLifecycleOwner) { playersOnline ->
-                playersOnline?.let {
-                    gameView.updatePlayersOnline(playersOnline)
-                }
+    private fun setupObservers() {
+        viewModel.getPlayersOnline().observe(viewLifecycleOwner) { playersOnline ->
+            if (playersOnline != null) {
+                binding.gameView.updatePlayersOnline(playersOnline)
             }
-
-            viewModel.getMazeSeed().observe(viewLifecycleOwner) { seed ->
-                viewModel.updateMazeSeed(seed)
+        }
+        viewModel.getMazeSeed().observe(viewLifecycleOwner) { seed ->
+            viewModel.updateMazeSeed(seed)
+        }
+        binding.gameView.playerCell.observe(viewLifecycleOwner) { position ->
+            if (viewModel.playerFoundExit(position)) {
+                viewModel.setNewSeed()
+                binding.gameView.restartPlayerPosition()
+            } else {
+                viewModel.updatePlayerPos(position)
             }
-
-            gameView.playerCell.observe(viewLifecycleOwner, Observer { position ->
-                if (viewModel.playerFoundExit(position)){
-                    viewModel.setNewSeed()
-                    gameView.restartPlayerPosition()
-                } else viewModel.updatePlayerPos(position)
-            })
-
-            viewModel.currentMaze.observe(viewLifecycleOwner) { newMaze ->
-                gameView.setMaze(newMaze)
-                gameView.restartPlayerPosition()
-            }
+        }
+        viewModel.currentMaze.observe(viewLifecycleOwner) { newMaze ->
+            binding.gameView.setMaze(newMaze)
+            binding.gameView.restartPlayerPosition()
         }
     }
 
