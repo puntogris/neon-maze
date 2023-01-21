@@ -24,8 +24,10 @@ class Repository @Inject constructor() : IRepository {
     }
 
     override fun updatePlayerPosition(player: Cell) {
-        firestore.collection("players").document(player.id)
-            .update("col", player.col, "row", player.row)
+        if (player.id.isNotEmpty()) {
+            firestore.collection("players").document(player.id)
+                .update("col", player.col, "row", player.row)
+        }
     }
 
     override fun createPlayerFirestore(): Cell {
