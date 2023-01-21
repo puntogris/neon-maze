@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.puntogris.neonmaze.livedata.FirestoreQueryLiveData
 import com.puntogris.neonmaze.models.Cell
 
-
 object FirestoreQueryCellTransformation {
 
     fun transform(liveData: FirestoreQueryLiveData): LiveData<List<Cell>>  {
@@ -16,5 +15,4 @@ object FirestoreQueryCellTransformation {
             }
         }
     }
-
 }

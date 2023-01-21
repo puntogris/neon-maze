@@ -13,37 +13,34 @@ import com.puntogris.neonmaze.R
 import com.puntogris.neonmaze.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
+
     private val viewModel: GameViewModel by activityViewModels()
     private lateinit var binding: FragmentWelcomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_welcome, container, false)
-
         binding.welcomeFragment = this
-
         return binding.root
     }
 
-    private fun navigateToMazeFragment(){
+    private fun navigateToMazeFragment() {
         findNavController().navigate(R.id.action_welcomeFragment_to_mazeFragment)
     }
 
-    fun fetchMazeInformationFromDatabase(){
-        viewModel.apply {
+    fun fetchMazeInformationFromDatabase() {
+        with(viewModel) {
             createPlayer()
-            getMazeSeed().observe(viewLifecycleOwner, Observer { seed ->
+            getMazeSeed().observe(viewLifecycleOwner) { seed ->
                 updateMazeSeed(seed)
                 navigateToMazeFragment()
-            })
+            }
         }
-
-        binding.apply {
+        with(binding) {
             loadingGroup.visibility = View.VISIBLE
             button.visibility = View.GONE
         }
     }
-
 }

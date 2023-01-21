@@ -110,5 +110,4 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
 
     //Checks in order to not draw the current player when it draws all the online players
     private fun notCurrentPlayer(onlinePlayer: Cell)= onlinePlayer.id != playerCell.value?.id
-
 }

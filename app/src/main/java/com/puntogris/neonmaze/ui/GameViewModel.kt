@@ -12,6 +12,7 @@ import kotlin.concurrent.scheduleAtFixedRate
 import com.puntogris.neonmaze.utils.PlayerStates.*
 
 class GameViewModel: ViewModel() {
+
     private val repo = Repository()
     private val _seed = MutableLiveData<Long>()
     private val seed:LiveData<Long> = _seed
@@ -68,5 +69,4 @@ class GameViewModel: ViewModel() {
     fun setNewSeed(){
         repo.setNewMazeSeedFirestore()
     }
-
 }

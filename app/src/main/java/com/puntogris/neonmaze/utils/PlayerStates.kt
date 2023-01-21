@@ -4,7 +4,3 @@ sealed class PlayerStates{
     object HasNewMoves : PlayerStates()
     object NotNewMoves : PlayerStates()
 }
-
-
-
-

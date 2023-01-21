@@ -94,5 +94,4 @@ class Maze(private val player: Cell, seed: Long) {
     }
 
     fun checkExit(player: Cell) = player.col == exit.col && player.row == exit.row
-
 }

@@ -3,9 +3,8 @@ package com.puntogris.neonmaze.livedata
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.*
 
-
-class FirestoreQueryLiveData(private val query: Query)
-    : MutableLiveData<List<DocumentSnapshot?>>(), EventListener<QuerySnapshot>{
+class FirestoreQueryLiveData(private val query: Query) : MutableLiveData<List<DocumentSnapshot?>>(),
+    EventListener<QuerySnapshot> {
 
     private var listenerRegistration: ListenerRegistration? = null
 
@@ -18,8 +17,6 @@ class FirestoreQueryLiveData(private val query: Query)
     }
 
     override fun onEvent(snapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
-        val documents : List<DocumentSnapshot> = snapshot!!.documents
-        postValue(documents)
+        postValue(snapshot?.documents.orEmpty())
     }
-
 }

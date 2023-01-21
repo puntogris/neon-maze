@@ -9,6 +9,7 @@ import com.puntogris.neonmaze.models.Cell
 import com.puntogris.neonmaze.utils.Utils
 
 class Repository : IRepository {
+
     private val firestore = Firebase.firestore
 
     override fun getMazeInfo(): FirestoreDocumentLiveData {
