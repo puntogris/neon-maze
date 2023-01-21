@@ -13,11 +13,10 @@ class FirestoreDocumentLiveData(private val documentReference: DocumentReference
     }
 
     override fun onInactive() {
-        listenerRegistration!!.remove()
+        listenerRegistration?.remove()
     }
 
     override fun onEvent(snapshot: DocumentSnapshot?, e: FirebaseFirestoreException?) {
-        postValue(snapshot!!)
+        snapshot?.let(::postValue)
     }
-
 }

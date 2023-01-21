@@ -8,7 +8,7 @@ import com.puntogris.neonmaze.livedata.FirestoreQueryLiveData
 import com.puntogris.neonmaze.models.Cell
 import com.puntogris.neonmaze.utils.Utils
 
-class Repository: IRepository{
+class Repository : IRepository {
     private val firestore = Firebase.firestore
 
     override fun getMazeInfo(): FirestoreDocumentLiveData {
@@ -22,18 +22,20 @@ class Repository: IRepository{
     }
 
     override fun updatePlayerPosition(player: Cell) {
-        firestore.collection("players").document(player.id).update("col", player.col,"row",player.row)
+        firestore.collection("players").document(player.id)
+            .update("col", player.col, "row", player.row)
     }
 
-    override fun createPlayerFirestore() :Cell {
+    override fun createPlayerFirestore(): Cell {
         val color = Utils.getRandomColor()
         val player = hashMapOf(
             "row" to 0,
             "col" to 0,
-            "color" to color)
+            "color" to color
+        )
         val ref = firestore.collection("players").document()
         ref.set(player)
-        return Cell(0,0,ref.id, color)
+        return Cell(0, 0, ref.id, color)
     }
 
     override fun deletePlayerFirestore(playerId: String) {
@@ -48,5 +50,4 @@ class Repository: IRepository{
     override fun setNewMazeSeedFirestore() {
         firestore.collection("maze").document("information").update("seed", FieldValue.increment(1))
     }
-
 }
