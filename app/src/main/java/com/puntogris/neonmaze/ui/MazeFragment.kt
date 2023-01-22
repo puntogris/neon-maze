@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.puntogris.neonmaze.R
 import com.puntogris.neonmaze.databinding.FragmentMazeBinding
 import com.puntogris.neonmaze.utils.viewBinding
@@ -31,7 +30,7 @@ class MazeFragment : Fragment(R.layout.fragment_maze) {
         viewModel.getMazeSeed().observe(viewLifecycleOwner) { seed ->
             viewModel.updateMazeSeed(seed)
         }
-        binding.gameView.playerCell.observe(viewLifecycleOwner) { position ->
+        binding.gameView.setPlayerMoveListener { position ->
             if (viewModel.playerFoundExit(position)) {
                 viewModel.setNewSeed()
                 binding.gameView.restartPlayerPosition()
