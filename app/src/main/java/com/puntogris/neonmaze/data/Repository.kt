@@ -8,13 +8,13 @@ interface Repository {
 
     fun getCurrentMazeSeed(): LiveData<Seed>
 
-    fun getAllPlayers(): LiveData<List<Cell>>
+    fun getAllPlayers(seed: Seed): LiveData<List<Cell>>
 
     fun deletePlayerFirestore(playerId: String)
 
     fun setNewMazeSeed()
 
-    suspend fun updatePlayerPosition(player: Cell)
+    suspend fun updatePlayerPosition(player: Cell, seed: Seed)
 
     suspend fun createPlayerFirestore(): Cell
 }

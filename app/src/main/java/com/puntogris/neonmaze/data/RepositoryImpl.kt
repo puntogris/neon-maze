@@ -16,6 +16,7 @@ import com.puntogris.neonmaze.utils.Constants.SEED_FIELD
 import com.puntogris.neonmaze.models.Seed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor() : Repository {
@@ -29,27 +30,31 @@ class RepositoryImpl @Inject constructor() : Repository {
         )
     }
 
-    override fun getAllPlayers(): LiveData<List<Cell>> {
-        val ref = firestore.collection(PLAYERS_COLLECTION)
+    override fun getAllPlayers(seed: Seed): LiveData<List<Cell>> {
+        val ref = firestore.collection(PLAYERS_COLLECTION).whereEqualTo(SEED_FIELD, seed.value)
         return FirestoreQueryCellTransformation.transform(
             FirestoreQueryLiveData(ref)
         )
     }
 
-    override suspend fun updatePlayerPosition(player: Cell) {
-        with(Dispatchers.IO) {
+    override suspend fun updatePlayerPosition(player: Cell, seed: Seed) {
+        withContext(Dispatchers.IO) {
             firestore.collection(PLAYERS_COLLECTION)
                 .document(player.id)
-                .update(COLUMN_FIELD, player.col, ROW_FIELD, player.row)
+                .update(
+                    COLUMN_FIELD, player.col,
+                    ROW_FIELD, player.row,
+                    SEED_FIELD, seed.value
+                )
                 .await()
         }
     }
 
-    override suspend fun createPlayerFirestore(): Cell = with(Dispatchers.IO) {
+    override suspend fun createPlayerFirestore(): Cell = withContext(Dispatchers.IO) {
         val ref = firestore.collection(PLAYERS_COLLECTION).document()
         val player = Cell(id = ref.id)
         ref.set(player).await()
-        return player
+        player
     }
 
     override fun deletePlayerFirestore(playerId: String) {

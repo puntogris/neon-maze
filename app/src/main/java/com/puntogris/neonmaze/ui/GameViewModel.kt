@@ -3,6 +3,7 @@ package com.puntogris.neonmaze.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.puntogris.neonmaze.data.Repository
 import com.puntogris.neonmaze.models.Cell
@@ -20,8 +21,10 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
 
     private val seed: LiveData<Seed> = repository.getCurrentMazeSeed()
 
-    val onlinePlayers: LiveData<List<Cell>> = repository.getAllPlayers().map { players ->
-        players.filter { it.id != playerCell.value.id }
+    val onlinePlayers: LiveData<List<Cell>> = seed.switchMap { seed ->
+        repository.getAllPlayers(seed).map { players ->
+            players.filter { it.id != playerCell.value.id }
+        }
     }
 
     val currentMaze = seed.map { Maze(playerCell.value, it.value) }
@@ -49,7 +52,7 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
             row = player.row
         }
         viewModelScope.launch {
-            repository.updatePlayerPosition(playerCell.value)
+            repository.updatePlayerPosition(playerCell.value, seed.value!!)
         }
     }
 }
