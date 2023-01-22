@@ -1,9 +1,10 @@
 package com.puntogris.neonmaze.ui
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -14,17 +15,33 @@ import com.puntogris.neonmaze.models.Maze
 import com.puntogris.neonmaze.utils.Constants.MAZE_COLUMNS
 import com.puntogris.neonmaze.utils.Direction
 import com.puntogris.neonmaze.utils.Utils
+import com.puntogris.neonmaze.utils.Utils.getWallPaint
+import com.puntogris.neonmaze.utils.Utils.playerPaint
+import java.util.Timer
+import kotlin.concurrent.scheduleAtFixedRate
 
 private const val MARGIN_SIZE = 20
+private const val MIDDLE_SCREEN_RATIO = 2
+private const val FADE_ANIMATION_DURATION = 500L
+private const val FADE_ANIMATION_INTERVAL = 8000L
+private const val ALPHA_VISIBLE = 255
+private const val WALL_SIZE = 3
 
-class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class GameView(context: Context, attrs: AttributeSet) : View(context, attrs),
+    ValueAnimator.AnimatorUpdateListener {
 
     private val exit: Cell = Cell()
-    private var cellSize = 0F
+
+    private var cellSize: Float = 0F
+
     private val marginMazeScreen: Float = cellSize / MAZE_COLUMNS + MARGIN_SIZE
+
     private var playersOnline: List<Cell> = emptyList()
+
     private var onPlayerMovedListener: (Cell) -> Unit = {}
+
     private var playerCell = Cell()
+
     private var mazeCells: Array<Array<Cell>> = emptyArray()
 
     private val mazeCols: Int
@@ -34,45 +51,40 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         get() = mazeCells.first().size
 
     private val hMargin: Float
-        get() = (width - (mazeCols * cellSize)) / 2
+        get() = (width - (mazeCols * cellSize)) / MIDDLE_SCREEN_RATIO
 
     private val vMargin: Float
-        get() = (height - (mazeRows * cellSize)) / 2
+        get() = (height - (mazeRows * cellSize)) / MIDDLE_SCREEN_RATIO
+
+    private var showMaze = true
+
+    private var mazeAlpha = ALPHA_VISIBLE
+
+    private val animator = ValueAnimator.ofInt(ALPHA_VISIBLE).apply {
+        duration = FADE_ANIMATION_DURATION
+        addUpdateListener(this@GameView)
+    }
 
     init {
         setLayerType(LAYER_TYPE_SOFTWARE, Paint())
+        Timer().scheduleAtFixedRate(FADE_ANIMATION_INTERVAL, FADE_ANIMATION_INTERVAL) {
+            showMaze = !showMaze
+            post { animator.start() }
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
         if (mazeCells.isEmpty()) {
             return
         }
-        cellSize = calculateCellSize()
         with(canvas) {
             translate(hMargin, vMargin)
-            drawText(
-                context.getString(R.string.amount_players_online, playersOnline.size),
-                width / 4.toFloat(),
-                (mazeRows.inc()) * cellSize,
-                Utils.wallPaint
-            )
-            mazeCells.flatten().map { cell -> cell.drawMazeCellWalls(this, cellSize) }
-            exit.drawMazeExit(this, cellSize, marginMazeScreen)
+            drawOnlinePlayerText()
+            drawMazeCellWalls()
+            drawMazeExit()
+            drawPlayerCell(playerCell)
+            drawOnlinePlayersCell()
         }
-        playerCell.drawPlayerCell(canvas, cellSize, marginMazeScreen)
-        playersOnline.forEach { player ->
-            if (notCurrentPlayer(player)) {
-                player.drawPlayerCell(canvas, cellSize, marginMazeScreen)
-            }
-        }
-    }
-
-    private fun calculateCellSize(): Float {
-        return if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            width / mazeCols.inc()
-        } else {
-            height / mazeRows.inc()
-        }.toFloat()
     }
 
     fun setMaze(maze: Maze) {
@@ -80,6 +92,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         playerCell = mazeCells[0][0]
         exit.col = mazeCols.dec()
         exit.row = mazeRows.dec()
+        cellSize = (width / mazeCols.inc()).toFloat()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -124,10 +137,89 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         invalidate()
     }
 
-    //Checks in order to not draw the current player when it draws all the online players
-    private fun notCurrentPlayer(onlinePlayer: Cell) = onlinePlayer.id != playerCell.id
-
     fun setPlayerMoveListener(listener: (Cell) -> Unit) {
         onPlayerMovedListener = listener
+    }
+
+    override fun onAnimationUpdate(animation: ValueAnimator) {
+        mazeAlpha = if (showMaze) {
+            animation.animatedValue as Int
+        } else {
+            ALPHA_VISIBLE - animation.animatedValue as Int
+        }
+        invalidate()
+    }
+
+    private fun Canvas.drawOnlinePlayerText() {
+        drawText(
+            context.getString(R.string.amount_players_online, playersOnline.size),
+            width / 4.toFloat(),
+            (mazeRows.inc()) * cellSize,
+            getWallPaint()
+        )
+    }
+
+    private fun Canvas.drawMazeCellWalls() {
+        val maze = arrayListOf<Float>().apply {
+            mazeCells.flatten().forEach {
+                if (it.topWall) {
+                    add(it.col * cellSize - WALL_SIZE)
+                    add(it.row * cellSize)
+                    add(it.col.inc() * cellSize + WALL_SIZE)
+                    add(it.row * cellSize)
+                }
+                if (it.leftWall) {
+                    add(it.col * cellSize)
+                    add(it.row * cellSize - WALL_SIZE)
+                    add(it.col * cellSize)
+                    add(it.row.inc() * cellSize)
+                }
+                if (it.bottomWall) {
+                    add(it.col * cellSize - WALL_SIZE)
+                    add(it.row.inc() * cellSize)
+                    add(it.col.inc() * cellSize + WALL_SIZE)
+                    add(it.row.inc() * cellSize)
+                }
+                if (it.rightWall) {
+                    add(it.col.inc() * cellSize)
+                    add(it.row * cellSize - WALL_SIZE)
+                    add(it.col.inc() * cellSize)
+                    add(it.row.inc() * cellSize)
+                }
+            }
+        }
+        drawLines(maze.toFloatArray(), getWallPaint(mazeAlpha))
+    }
+
+    private fun Canvas.drawPlayerCell(cell: Cell) {
+        with(cell) {
+            playerPaint.color = Color.parseColor(color)
+            playerPaint.setShadowLayer(12f, 0f, 0f, Color.parseColor(color))
+            drawOval(
+                col * cellSize + marginMazeScreen,
+                row * cellSize + marginMazeScreen,
+                (col + 1) * cellSize - marginMazeScreen,
+                (row + 1) * cellSize - marginMazeScreen,
+                playerPaint
+            )
+        }
+    }
+
+    private fun Canvas.drawOnlinePlayersCell() {
+        playersOnline.forEach {
+            drawPlayerCell(it)
+        }
+    }
+
+    private fun Canvas.drawMazeExit() {
+        with(exit) {
+            drawRect(
+                col * cellSize + marginMazeScreen,
+                row * cellSize + marginMazeScreen,
+                col.inc() * cellSize - marginMazeScreen,
+                row.inc() * cellSize - marginMazeScreen,
+                Utils.exitPaint
+            )
+        }
     }
 }

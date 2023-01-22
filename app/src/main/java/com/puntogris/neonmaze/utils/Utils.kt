@@ -13,12 +13,13 @@ object Utils {
 
     fun getRandomColor() = colorList.random()
 
-    val wallPaint = Paint().apply {
+    fun getWallPaint(paintAlpha: Int = 255) = Paint().apply {
         color = Color.WHITE
         isAntiAlias = true
         strokeWidth = 7F
-        setShadowLayer(8f, 0f, 0f, Color.parseColor("#FF00D6"))
+        setShadowLayer(8f, 0f, 0f, Color.argb(paintAlpha, 255, 0, 214))
         textSize = 60f
+        alpha = paintAlpha
     }
 
     val playerPaint = Paint().apply {

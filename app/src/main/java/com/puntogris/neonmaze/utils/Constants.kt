@@ -11,6 +11,4 @@ object Constants {
 
     const val MAZE_COLUMNS = 10
     const val MAZE_ROWS = 17
-
-    const val DATABASE_UPDATE_INTERVAL = 200L
 }

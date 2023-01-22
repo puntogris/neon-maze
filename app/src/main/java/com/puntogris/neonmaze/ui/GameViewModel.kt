@@ -20,7 +20,9 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
 
     private val seed: LiveData<Seed> = repository.getCurrentMazeSeed()
 
-    val onlinePlayers: LiveData<List<Cell>> = repository.getAllPlayers()
+    val onlinePlayers: LiveData<List<Cell>> = repository.getAllPlayers().map { players ->
+        players.filter { it.id != playerCell.value.id }
+    }
 
     val currentMaze = seed.map { Maze(playerCell.value, it.value) }
 
