@@ -1,6 +1,5 @@
 package com.puntogris.neonmaze.models
 
-import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Parcelable
@@ -69,7 +68,6 @@ class Cell(
             )
     }
 
-    @SuppressLint("Range")
     fun drawPlayerCell(canvas: Canvas, cellSize: Float, marginMazeScreen: Float) {
         Utils.playerPaint.color = Color.parseColor(color)
         Utils.playerPaint.setShadowLayer(12f, 0f, 0f, Color.parseColor(color))

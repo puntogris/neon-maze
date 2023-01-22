@@ -32,7 +32,6 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
         setLayerType(LAYER_TYPE_SOFTWARE, Paint())
     }
 
-    @SuppressLint("Range")
     override fun onDraw(canvas: Canvas) {
         cellSize = calculateCellSize()
         canvas.apply {
@@ -75,7 +74,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
         if(event?.action == MotionEvent.ACTION_DOWN)
             return true
 
-        if(event!!.action == MotionEvent.ACTION_MOVE){
+        if(event?.action == MotionEvent.ACTION_MOVE){
             playerCell.value?.run {
                 movePlayer(getMoveDirection(event, cellSize, hMargin, vMargin))
             }
