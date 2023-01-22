@@ -5,7 +5,7 @@ Used in this project:</br>
   * Kotlin
   * Canvas
   * Google Cloud Firestore
-  * Recursive Backtracking
+  * Randomized depth-first search for maze generation. [More info](https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_depth-first_search)
   * MVVM
   
 # Screenshots
