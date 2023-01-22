@@ -8,4 +8,7 @@ object Constants {
     const val COLUMN_FIELD = "col"
     const val SEED_FIELD = "seed"
     const val COLOR_FIELD = "color"
+
+    const val MAZE_COLUMNS = 10
+    const val MAZE_ROWS = 17
 }

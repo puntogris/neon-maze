@@ -1,7 +1,12 @@
 package com.puntogris.neonmaze.livedata
 
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.FirebaseFirestoreException
 
 class FirestoreQueryLiveData(private val query: Query) : MutableLiveData<List<DocumentSnapshot?>>(),
     EventListener<QuerySnapshot> {

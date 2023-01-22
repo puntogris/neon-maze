@@ -1,10 +1,12 @@
 package com.puntogris.neonmaze.models
 
+import com.puntogris.neonmaze.utils.Constants.MAZE_COLUMNS
+import com.puntogris.neonmaze.utils.Constants.MAZE_ROWS
 import java.util.*
 
 class Maze(private val player: Cell, seed: Long) {
-    private val mazeCols = 10
-    private val mazeRows = 17
+    private val mazeCols = MAZE_COLUMNS
+    private val mazeRows = MAZE_ROWS
     private val exit = Cell(mazeCols - 1, mazeRows - 1)
     private val cells: Array<Array<Cell>> = Array(mazeCols) { Array(mazeRows) { Cell() } }
     private var random: Random = Random(seed)
@@ -14,12 +16,11 @@ class Maze(private val player: Cell, seed: Long) {
         var current: Cell
         var next: Cell?
 
-        for (col in 0 until mazeCols) {
-            for (row in 0 until mazeRows) {
+        repeat(mazeCols) { col ->
+            repeat(mazeRows) {row ->
                 cells[col][row] = Cell(col, row, player.id, player.color)
             }
         }
-
         current = cells[0][0]
         current.visited = true
 
@@ -38,37 +39,22 @@ class Maze(private val player: Cell, seed: Long) {
         return cells
     }
 
-
     private fun getNeighbour(cell: Cell): Cell? {
-
-        val neigbourList: ArrayList<Cell> = ArrayList()
-        //vecino izquierda
-        if (cell.col > 0) {
-            if (!cells[cell.col - 1][cell.row].visited) {
-                neigbourList.add(cells[cell.col - 1][cell.row])
-            }
+        val neighbourList: ArrayList<Cell> = arrayListOf()
+        if (cell.col > 0 && !cells[cell.col - 1][cell.row].visited) {
+            neighbourList.add(cells[cell.col - 1][cell.row])
         }
-        //vecino derecha
-        if (cell.col < mazeCols - 1) {
-            if (!cells[cell.col + 1][cell.row].visited) {
-                neigbourList.add(cells[cell.col + 1][cell.row])
-            }
+        if (cell.col < mazeCols - 1 && !cells[cell.col + 1][cell.row].visited) {
+            neighbourList.add(cells[cell.col + 1][cell.row])
         }
-        //vecino arriba
-        if (cell.row > 0) {
-            if (!cells[cell.col][cell.row - 1].visited) {
-                neigbourList.add(cells[cell.col][cell.row - 1])
-            }
+        if (cell.row > 0 && !cells[cell.col][cell.row - 1].visited) {
+            neighbourList.add(cells[cell.col][cell.row - 1])
         }
-        //vecino abajo
-        if (cell.row < mazeRows - 1) {
-            if (!cells[cell.col][cell.row + 1].visited) {
-                neigbourList.add(cells[cell.col][cell.row + 1])
-            }
+        if (cell.row < mazeRows - 1 && !cells[cell.col][cell.row + 1].visited) {
+            neighbourList.add(cells[cell.col][cell.row + 1])
         }
-        return if (neigbourList.size > 0) {
-            val index = random.nextInt(neigbourList.size)
-            neigbourList[index]
+        return if (neighbourList.size > 0) {
+            neighbourList[random.nextInt(neighbourList.size)]
         } else {
             null
         }

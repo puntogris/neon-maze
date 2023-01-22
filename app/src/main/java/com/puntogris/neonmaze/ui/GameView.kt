@@ -10,14 +10,17 @@ import android.view.MotionEvent
 import android.view.View
 import com.puntogris.neonmaze.R
 import com.puntogris.neonmaze.models.Cell
+import com.puntogris.neonmaze.utils.Constants.MAZE_COLUMNS
 import com.puntogris.neonmaze.utils.Direction
 import com.puntogris.neonmaze.utils.Utils
+
+private const val MARGIN_SIZE = 20
 
 class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private val exit: Cell = Cell()
     private var cellSize = 0F
-    private val marginMazeScreen: Float = cellSize / 10 + 20
+    private val marginMazeScreen: Float = cellSize / MAZE_COLUMNS + MARGIN_SIZE
     private var playersOnline: List<Cell> = emptyList()
     private var onPlayerMovedListener: (Cell) -> Unit = {}
     private var playerCell = Cell()
