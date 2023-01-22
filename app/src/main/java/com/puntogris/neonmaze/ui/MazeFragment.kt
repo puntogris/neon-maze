@@ -29,14 +29,7 @@ class MazeFragment : Fragment(R.layout.fragment_maze) {
             binding.gameView.setMaze(newMaze)
             binding.gameView.restartPlayerPosition()
         }
-        binding.gameView.setPlayerMoveListener { position ->
-            if (viewModel.isMazeExit(position)) {
-                viewModel.setNewSeed()
-                binding.gameView.restartPlayerPosition()
-            } else {
-                viewModel.updatePlayerPos(position)
-            }
-        }
+        binding.gameView.setPlayerMoveListener(viewModel::onPlayerChangedPosition)
     }
 
     override fun onStop() {

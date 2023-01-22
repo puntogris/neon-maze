@@ -26,9 +26,7 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
 
     val onlinePlayers: LiveData<List<Cell>> = repository.getAllPlayers()
 
-    val currentMaze = seed.map { seed ->
-        Maze(playerCell.value, seed.value)
-    }
+    val currentMaze = seed.map { Maze(playerCell.value, it.value) }
 
     val updateDatabaseTimer = Timer().scheduleAtFixedRate(0, DATABASE_UPDATE_INTERVAL) {
         if (playerState is PlayerStates.HasNewMoves) {
@@ -45,7 +43,16 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
         repository.deletePlayerFirestore(playerCell.value.id)
     }
 
-    fun updatePlayerPos(player: Cell) {
+    fun onPlayerChangedPosition(position: Cell) {
+        val exitReached = currentMaze.value?.checkExit(position) ?: false
+        if (exitReached) {
+            repository.setNewMazeSeed()
+        } else {
+            updatePlayerPosition(position)
+        }
+    }
+
+    private fun updatePlayerPosition(player: Cell) {
         playerCell.value.apply {
             col = player.col
             row = player.row
@@ -53,13 +60,7 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-    fun isMazeExit(player: Cell) = currentMaze.value?.checkExit(player) ?: false
-
     fun stopTimer() {
         updateDatabaseTimer.cancel()
-    }
-
-    fun setNewSeed() {
-        repository.setNewMazeSeed()
     }
 }
