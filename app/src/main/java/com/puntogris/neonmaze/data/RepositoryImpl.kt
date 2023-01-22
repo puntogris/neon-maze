@@ -14,7 +14,6 @@ import com.puntogris.neonmaze.utils.Constants.PLAYERS_COLLECTION
 import com.puntogris.neonmaze.utils.Constants.ROW_FIELD
 import com.puntogris.neonmaze.utils.Constants.SEED_FIELD
 import com.puntogris.neonmaze.models.Seed
-import com.puntogris.neonmaze.utils.Utils
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

@@ -1,7 +1,6 @@
 package com.puntogris.neonmaze.data
 
 import androidx.lifecycle.LiveData
-import com.puntogris.neonmaze.livedata.FirestoreDocumentLiveData
 import com.puntogris.neonmaze.models.Cell
 import com.puntogris.neonmaze.models.Seed
 
