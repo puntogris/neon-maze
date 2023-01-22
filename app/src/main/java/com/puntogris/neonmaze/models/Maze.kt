@@ -26,7 +26,7 @@ class Maze(private val player: Cell, seed: Long) {
         var next: Cell?
 
         repeat(mazeCols) { col ->
-            repeat(mazeRows) {row ->
+            repeat(mazeRows) { row ->
                 cells[col][row] = Cell(col, row, player.id, player.color)
             }
         }

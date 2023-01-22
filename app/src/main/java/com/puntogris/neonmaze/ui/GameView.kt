@@ -114,8 +114,8 @@ class GameView(
         getPlayerNewCell(direction)?.let { newCell ->
             playerCell = newCell
             onPlayerMovedListener(newCell)
+            invalidate()
         }
-        invalidate()
     }
 
     private fun getPlayerNewCell(direction: Direction): Cell? {
