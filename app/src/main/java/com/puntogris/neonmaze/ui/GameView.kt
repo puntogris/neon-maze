@@ -27,8 +27,10 @@ private const val FADE_ANIMATION_INTERVAL = 8000L
 private const val ALPHA_VISIBLE = 255
 private const val WALL_SIZE = 3
 
-class GameView(context: Context, attrs: AttributeSet) : View(context, attrs),
-    ValueAnimator.AnimatorUpdateListener {
+class GameView(
+    context: Context,
+    attrs: AttributeSet
+) : View(context, attrs), ValueAnimator.AnimatorUpdateListener {
 
     private val exit: Cell = Cell()
 
@@ -93,6 +95,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs),
         exit.col = mazeCols.dec()
         exit.row = mazeRows.dec()
         cellSize = (width / mazeCols.inc()).toFloat()
+        invalidate()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -125,11 +128,6 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs),
                 else -> null
             }
         }
-    }
-
-    fun restartPlayerPosition() {
-        playerCell = mazeCells[0][0]
-        invalidate()
     }
 
     fun updatePlayersOnline(newPlayersOnline: List<Cell>) {
@@ -206,9 +204,7 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs),
     }
 
     private fun Canvas.drawOnlinePlayersCell() {
-        playersOnline.forEach {
-            drawPlayerCell(it)
-        }
+        playersOnline.forEach { drawPlayerCell(it) }
     }
 
     private fun Canvas.drawMazeExit() {

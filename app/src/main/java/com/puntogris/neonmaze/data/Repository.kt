@@ -10,11 +10,11 @@ interface Repository {
 
     fun getAllPlayers(): LiveData<List<Cell>>
 
-    suspend fun updatePlayerPosition(player: Cell)
-
     fun deletePlayerFirestore(playerId: String)
 
     fun setNewMazeSeed()
+
+    suspend fun updatePlayerPosition(player: Cell)
 
     suspend fun createPlayerFirestore(): Cell
 }

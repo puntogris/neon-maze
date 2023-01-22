@@ -5,11 +5,16 @@ import com.puntogris.neonmaze.utils.Constants.MAZE_ROWS
 import java.util.*
 
 class Maze(private val player: Cell, seed: Long) {
+
     private val mazeCols = MAZE_COLUMNS
+
     private val mazeRows = MAZE_ROWS
+
     private val exit = Cell(mazeCols - 1, mazeRows - 1)
-    private val cells: Array<Array<Cell>> = Array(mazeCols) { Array(mazeRows) { Cell() } }
-    private var random: Random = Random(seed)
+
+    private val cells = Array(mazeCols) { Array(mazeRows) { Cell() } }
+
+    private var random = Random(seed)
 
     init {
         createMaze()

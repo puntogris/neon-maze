@@ -21,13 +21,8 @@ class MazeFragment : Fragment(R.layout.fragment_maze) {
     }
 
     private fun setupObservers() {
-        viewModel.onlinePlayers.observe(viewLifecycleOwner) { players ->
-            binding.gameView.updatePlayersOnline(players)
-        }
-        viewModel.currentMaze.observe(viewLifecycleOwner) { newMaze ->
-            binding.gameView.setMaze(newMaze)
-            binding.gameView.restartPlayerPosition()
-        }
+        viewModel.onlinePlayers.observe(viewLifecycleOwner, binding.gameView::updatePlayersOnline)
+        viewModel.currentMaze.observe(viewLifecycleOwner, binding.gameView::setMaze)
         binding.gameView.setPlayerMoveListener(viewModel::onPlayerChangedPosition)
     }
 
