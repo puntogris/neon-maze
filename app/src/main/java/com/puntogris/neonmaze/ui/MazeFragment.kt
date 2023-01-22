@@ -17,18 +17,17 @@ class MazeFragment : Fragment(R.layout.fragment_maze) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.timerDatabaseUpdated.run()
+        viewModel.updateDatabaseTimer.run()
         setupObservers()
     }
 
     private fun setupObservers() {
-        viewModel.getPlayersOnline().observe(viewLifecycleOwner) { playersOnline ->
-            if (playersOnline != null) {
-                binding.gameView.updatePlayersOnline(playersOnline)
-            }
+        viewModel.onlinePlayers.observe(viewLifecycleOwner) { players ->
+            binding.gameView.updatePlayersOnline(players)
         }
-        viewModel.getMazeSeed().observe(viewLifecycleOwner) { seed ->
-            viewModel.updateMazeSeed(seed)
+        viewModel.currentMaze.observe(viewLifecycleOwner) { newMaze ->
+            binding.gameView.setMaze(newMaze)
+            binding.gameView.restartPlayerPosition()
         }
         binding.gameView.setPlayerMoveListener { position ->
             if (viewModel.playerFoundExit(position)) {
@@ -38,17 +37,11 @@ class MazeFragment : Fragment(R.layout.fragment_maze) {
                 viewModel.updatePlayerPos(position)
             }
         }
-        viewModel.currentMaze.observe(viewLifecycleOwner) { newMaze ->
-            binding.gameView.setMaze(newMaze)
-            binding.gameView.restartPlayerPosition()
-        }
     }
 
     override fun onStop() {
-        viewModel.apply {
-            deletePlayer()
-            stopTimer()
-        }
+        viewModel.deletePlayer()
+        viewModel.stopTimer()
         super.onStop()
     }
 }

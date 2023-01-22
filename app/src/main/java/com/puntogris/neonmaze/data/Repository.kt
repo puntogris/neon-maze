@@ -1,21 +1,21 @@
 package com.puntogris.neonmaze.data
 
+import androidx.lifecycle.LiveData
 import com.puntogris.neonmaze.livedata.FirestoreDocumentLiveData
-import com.puntogris.neonmaze.livedata.FirestoreQueryLiveData
 import com.puntogris.neonmaze.models.Cell
+import com.puntogris.neonmaze.models.Seed
 
 interface Repository {
-    fun getMazeInfo(): FirestoreDocumentLiveData
 
-    fun getAllPlayers(): FirestoreQueryLiveData
+    fun getCurrentMazeSeed(): LiveData<Seed>
+
+    fun getAllPlayers(): LiveData<List<Cell>>
 
     fun updatePlayerPosition(player: Cell)
 
-    fun createPlayerFirestore(): Cell
-
     fun deletePlayerFirestore(playerId: String)
 
-    fun getMazeSeedFirestore(): FirestoreDocumentLiveData
+    fun setNewMazeSeed()
 
-    fun setNewMazeSeedFirestore()
+    suspend fun createPlayerFirestore(): Cell
 }

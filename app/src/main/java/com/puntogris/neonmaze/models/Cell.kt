@@ -15,7 +15,7 @@ class Cell(
     var col: Int = 0,
     var row: Int = 0,
     var id: String = "",
-    var color: String = "#ffffff"
+    var color: String = Utils.getRandomColor()
 ) :
     Parcelable {
     @IgnoredOnParcel

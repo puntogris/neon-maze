@@ -1,5 +1,6 @@
 package com.puntogris.neonmaze.data
 
+import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -12,21 +13,27 @@ import com.puntogris.neonmaze.utils.Constants.MAZE_COLLECTION
 import com.puntogris.neonmaze.utils.Constants.PLAYERS_COLLECTION
 import com.puntogris.neonmaze.utils.Constants.ROW_FIELD
 import com.puntogris.neonmaze.utils.Constants.SEED_FIELD
+import com.puntogris.neonmaze.models.Seed
 import com.puntogris.neonmaze.utils.Utils
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor() : Repository {
 
     private val firestore = Firebase.firestore
 
-    override fun getMazeInfo(): FirestoreDocumentLiveData {
+    override fun getCurrentMazeSeed(): LiveData<Seed> {
         val ref = firestore.collection(MAZE_COLLECTION).document(INFORMATION_DOCUMENT)
-        return FirestoreDocumentLiveData(ref)
+        return FirestoreMazeDeserializerTransformation.transform(
+            FirestoreDocumentLiveData(ref)
+        )
     }
 
-    override fun getAllPlayers(): FirestoreQueryLiveData {
+    override fun getAllPlayers(): LiveData<List<Cell>> {
         val ref = firestore.collection(PLAYERS_COLLECTION)
-        return FirestoreQueryLiveData(ref)
+        return FirestoreQueryCellTransformation.transform(
+            FirestoreQueryLiveData(ref)
+        )
     }
 
     override fun updatePlayerPosition(player: Cell) {
@@ -37,10 +44,10 @@ class RepositoryImpl @Inject constructor() : Repository {
         }
     }
 
-    override fun createPlayerFirestore(): Cell {
+    override suspend fun createPlayerFirestore(): Cell {
         val ref = firestore.collection(PLAYERS_COLLECTION).document()
-        val player = Cell(0, 0, ref.id, Utils.getRandomColor())
-        ref.set(player)
+        val player = Cell(id = ref.id)
+        ref.set(player).await()
         return player
     }
 
@@ -48,12 +55,7 @@ class RepositoryImpl @Inject constructor() : Repository {
         firestore.collection(PLAYERS_COLLECTION).document(playerId).delete()
     }
 
-    override fun getMazeSeedFirestore(): FirestoreDocumentLiveData {
-        val ref = firestore.collection(MAZE_COLLECTION).document(INFORMATION_DOCUMENT)
-        return FirestoreDocumentLiveData(ref)
-    }
-
-    override fun setNewMazeSeedFirestore() {
+    override fun setNewMazeSeed() {
         firestore.collection(MAZE_COLLECTION)
             .document(INFORMATION_DOCUMENT)
             .update(SEED_FIELD, FieldValue.increment(1))

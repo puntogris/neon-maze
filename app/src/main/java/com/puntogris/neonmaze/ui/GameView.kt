@@ -43,6 +43,9 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     override fun onDraw(canvas: Canvas) {
+        if (mazeCells.isEmpty()) {
+            return
+        }
         cellSize = calculateCellSize()
         with(canvas) {
             translate(hMargin, vMargin)
