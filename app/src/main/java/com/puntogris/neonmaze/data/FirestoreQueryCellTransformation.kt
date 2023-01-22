@@ -12,8 +12,8 @@ import com.puntogris.neonmaze.utils.Constants.ROW_FIELD
 object FirestoreQueryCellTransformation {
 
     fun transform(liveData: FirestoreQueryLiveData): LiveData<List<Cell>>  {
-        return Transformations.map(liveData) { snap ->
-            snap.map(::deserialize)
+        return Transformations.map(liveData) { data ->
+            data.map(::deserialize)
         }
     }
 
