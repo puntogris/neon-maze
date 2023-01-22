@@ -105,15 +105,12 @@ class Cell(
         val absDx: Float = abs(dx)
         val absDy: Float = abs(dy)
 
-        return if (absDx > cellSize || absDy > cellSize) {
-            if (absDx > absDy)
-            //move in x direction
-                if (dx > 0) Direction.RIGHT
-                else Direction.LEFT
-            else
-            //move in y direction
-                if (dy > 0) Direction.DOWN
-                else Direction.UP
-        } else Direction.NONE
+        return when {
+            absDx < cellSize && absDy < cellSize -> Direction.NONE
+            absDx > absDy && dx > 0 -> Direction.RIGHT
+            absDx > absDy -> Direction.LEFT
+            dy > 0 -> Direction.DOWN
+            else -> Direction.UP
+        }
     }
 }
