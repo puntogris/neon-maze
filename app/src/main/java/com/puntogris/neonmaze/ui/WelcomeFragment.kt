@@ -20,7 +20,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.button.setOnClickListener {
+        binding.buttonJoinMaze.setOnClickListener {
             fetchMazeInformationFromDatabase()
         }
     }
@@ -30,7 +30,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
             viewModel.createPlayer()
             findNavController().navigate(R.id.action_welcomeFragment_to_mazeFragment)
         }
-        binding.loadingGroup.visibility = View.VISIBLE
-        binding.button.visibility = View.GONE
+        binding.groupLoading.visibility = View.VISIBLE
+        binding.buttonJoinMaze.visibility = View.GONE
     }
 }

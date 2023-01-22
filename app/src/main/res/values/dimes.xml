@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="spacing_empty">0dp</dimen>
+    <dimen name="margin_welcome_title">130dp</dimen>
+    <dimen name="margin_join_game_button">90dp</dimen>
+    <dimen name="margin_loading_title">24dp</dimen>
+    <dimen name="size_welcome_title">45sp</dimen>
+    <dimen name="size_loading_title">18sp</dimen>
+</resources>

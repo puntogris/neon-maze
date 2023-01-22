@@ -1,33 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/colorPrimaryDark"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.WelcomeFragment"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="170dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="92dp"
-        android:backgroundTint="@color/colorAccent"
-        android:text="@string/join_maze"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    android:background="@color/colorPrimaryDark"
+    tools:context=".ui.WelcomeFragment">
 
     <TextView
-        android:id="@+id/welcomeFragmentTitle"
+        android:id="@+id/textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="148dp"
+        android:layout_marginTop="@dimen/margin_welcome_title"
         android:shadowColor="@color/colorPrimary"
         android:shadowRadius="15"
         android:text="@string/app_name"
         android:textColor="@android:color/white"
-        android:textSize="45sp"
+        android:textSize="@dimen/size_welcome_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,22 +32,34 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/loadingMaze"
+        android:id="@+id/textView_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:textColor="@android:color/white"
+        android:layout_marginTop="@dimen/margin_loading_title"
         android:text="@string/loading_maze_message"
-        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/size_loading_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
+    <Button
+        android:id="@+id/button_join_maze"
+        android:layout_width="@dimen/spacing_empty"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_join_game_button"
+        android:layout_marginBottom="@dimen/margin_join_game_button"
+        android:backgroundTint="@color/colorAccent"
+        android:text="@string/join_maze"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/loadingGroup"
+        android:id="@+id/group_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        app:constraint_referenced_ids="loadingMaze,progressBar" />
+        app:constraint_referenced_ids="textView_loading,progressBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
