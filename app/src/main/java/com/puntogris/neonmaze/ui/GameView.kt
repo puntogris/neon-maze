@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.puntogris.neonmaze.R
 import com.puntogris.neonmaze.models.Cell
+import com.puntogris.neonmaze.models.Maze
 import com.puntogris.neonmaze.utils.Constants.MAZE_COLUMNS
 import com.puntogris.neonmaze.utils.Direction
 import com.puntogris.neonmaze.utils.Utils
@@ -74,9 +75,9 @@ class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         }.toFloat()
     }
 
-    fun setMaze(maze: Array<Array<Cell>>) {
-        mazeCells = maze
-        playerCell = maze[0][0]
+    fun setMaze(maze: Maze) {
+        mazeCells = maze.getMazeMatrix()
+        playerCell = mazeCells[0][0]
         exit.col = mazeCols.dec()
         exit.row = mazeRows.dec()
     }

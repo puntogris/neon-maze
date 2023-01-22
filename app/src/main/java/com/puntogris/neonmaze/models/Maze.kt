@@ -11,7 +11,11 @@ class Maze(private val player: Cell, seed: Long) {
     private val cells: Array<Array<Cell>> = Array(mazeCols) { Array(mazeRows) { Cell() } }
     private var random: Random = Random(seed)
 
-    fun createMaze(): Array<Array<Cell>> {
+    init {
+        createMaze()
+    }
+
+    private fun createMaze(): Array<Array<Cell>> {
         val stack = Stack<Cell>()
         var current: Cell
         var next: Cell?
@@ -80,4 +84,6 @@ class Maze(private val player: Cell, seed: Long) {
     }
 
     fun checkExit(player: Cell) = player.col == exit.col && player.row == exit.row
+
+    fun getMazeMatrix() = cells
 }

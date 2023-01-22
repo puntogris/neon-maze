@@ -26,8 +26,8 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
 
     val onlinePlayers: LiveData<List<Cell>> = repository.getAllPlayers()
 
-    val currentMaze = seed.map { newSeed ->
-        Maze(playerCell.value, newSeed.value).createMaze()
+    val currentMaze = seed.map { seed ->
+        Maze(playerCell.value, seed.value)
     }
 
     val updateDatabaseTimer = Timer().scheduleAtFixedRate(0, DATABASE_UPDATE_INTERVAL) {
@@ -53,10 +53,7 @@ class GameViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-    fun playerFoundExit(player: Cell) = Maze(
-        playerCell.value,
-        seed.value?.value ?: 0L
-    ).checkExit(player)
+    fun isMazeExit(player: Cell) = currentMaze.value?.checkExit(player) ?: false
 
     fun stopTimer() {
         updateDatabaseTimer.cancel()
