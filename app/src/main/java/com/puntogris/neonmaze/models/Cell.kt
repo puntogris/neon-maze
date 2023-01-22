@@ -16,8 +16,7 @@ class Cell(
     var row: Int = 0,
     var id: String = "",
     var color: String = Utils.getRandomColor()
-) :
-    Parcelable {
+) : Parcelable {
     @IgnoredOnParcel
     var topWall = true
 
