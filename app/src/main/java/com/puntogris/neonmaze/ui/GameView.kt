@@ -14,98 +14,112 @@ import com.puntogris.neonmaze.models.Cell
 import com.puntogris.neonmaze.utils.Direction
 import com.puntogris.neonmaze.utils.Utils
 
-class GameView(context: Context, attrs: AttributeSet) : View(context, attrs){
+class GameView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private lateinit var exit: Cell
-    private val mazeCols by lazy { mazeCells?.size!! }
-    private val mazeRows by lazy { mazeCells?.get(0)?.size!!}
-    private val hMargin by lazy { (width - (mazeCols * cellSize)) / 2 }
-    private val vMargin by lazy { (height - (mazeRows  * cellSize)) / 2}
     private var cellSize = 0F
     private val marginMazeScreen: Float = cellSize / 10 + 20
     private var playersOnline = MutableLiveData<List<Cell>>()
     private var _playerCell = MutableLiveData<Cell>()
     val playerCell: LiveData<Cell> = _playerCell
-    private var mazeCells = MutableLiveData<Array<Array<Cell>>>().value
 
-    init{
+    private var mazeCells: Array<Array<Cell>> = emptyArray()
+
+    private val mazeCols: Int
+        get() = mazeCells.size
+
+    private val mazeRows: Int
+        get() = mazeCells.first().size
+
+    private val hMargin: Float
+        get() = (width - (mazeCols * cellSize)) / 2
+
+    private val vMargin: Float
+        get() = (height - (mazeRows * cellSize)) / 2
+
+    init {
         setLayerType(LAYER_TYPE_SOFTWARE, Paint())
     }
 
     override fun onDraw(canvas: Canvas) {
         cellSize = calculateCellSize()
-        canvas.apply {
-            translate(hMargin,vMargin)
-            drawText(context.getString(R.string.amount_players_online,playersOnline.value?.size),
+        with(canvas) {
+            translate(hMargin, vMargin)
+            drawText(
+                context.getString(R.string.amount_players_online, playersOnline.value?.size),
                 width / 4.toFloat(),
                 (mazeRows + 1) * cellSize,
                 Utils.wallPaint
             )
-            mazeCells?.let {
-                it.flatten().map { cell -> cell.drawMazeCellWalls(this, cellSize)}
-            }
+            mazeCells.flatten().map { cell -> cell.drawMazeCellWalls(this, cellSize) }
             exit.drawMazeExit(this, cellSize, marginMazeScreen)
         }
         playerCell.value?.drawPlayerCell(canvas, cellSize, marginMazeScreen)
-
-        playersOnline.value?.forEach{ player ->
-            if (notCurrentPlayer(player))
+        playersOnline.value?.forEach { player ->
+            if (notCurrentPlayer(player)) {
                 player.drawPlayerCell(canvas, cellSize, marginMazeScreen)
+            }
         }
     }
 
-    private fun calculateCellSize(): Float{
-        return if(width / height.toFloat() < mazeCols / mazeRows.toFloat())
-            (width / (mazeCols + 1)).toFloat()
-        else
-            (height / (mazeRows + 1)).toFloat()
+    private fun calculateCellSize(): Float {
+        return if (width / height < mazeCols / mazeRows.toFloat()) {
+            width / mazeCols.inc()
+        } else {
+            height / mazeRows.inc()
+        }.toFloat()
     }
 
-    fun setMaze(maze: Array<Array<Cell>>){
+    fun setMaze(maze: Array<Array<Cell>>) {
         mazeCells = maze
         _playerCell.value = maze[0][0]
-        exit = Cell(mazeCols - 1, mazeRows - 1)
+        exit = Cell(mazeCols.dec(), mazeRows.dec())
         invalidate()
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if(event?.action == MotionEvent.ACTION_DOWN)
+        if (event?.action == MotionEvent.ACTION_DOWN) {
             return true
-
-        if(event?.action == MotionEvent.ACTION_MOVE){
-            playerCell.value?.run {
-                movePlayer(getMoveDirection(event, cellSize, hMargin, vMargin))
+        }
+        if (event?.action == MotionEvent.ACTION_MOVE) {
+            playerCell.value?.let {
+                movePlayer(it.getMoveDirection(event, cellSize, hMargin, vMargin))
             }
             return true
         }
         return super.onTouchEvent(event)
     }
 
-    private fun movePlayer(direction: Direction){
-        _playerCell.value?.apply {
-            when(direction){
-                Direction.UP -> if(!topWall) _playerCell.postValue(mazeCells!![col][row - 1])
-                Direction.DOWN -> if(!bottomWall) _playerCell.postValue(mazeCells!![col][row + 1])
-                Direction.LEFT -> if(!leftWall) _playerCell.postValue(mazeCells!![col - 1][row])
-                Direction.RIGHT -> if(!rightWall) _playerCell.postValue(mazeCells!![col + 1][row])
-                Direction.NONE -> return
-            }
+    private fun movePlayer(direction: Direction) {
+        getPlayerNewCell(direction)?.let { newCell ->
+            _playerCell.postValue(newCell)
         }
         invalidate()
     }
 
-    fun restartPlayerPosition(){
-        _playerCell.value = mazeCells!![0][0]
+    private fun getPlayerNewCell(direction: Direction): Cell? {
+        return playerCell.value?.run {
+            when {
+                direction == Direction.UP && !topWall -> mazeCells[col][row.dec()]
+                direction == Direction.DOWN && !bottomWall -> mazeCells[col][row.inc()]
+                direction == Direction.LEFT && !leftWall -> mazeCells[col.dec()][row]
+                direction == Direction.RIGHT && !rightWall -> mazeCells[col.inc()][row]
+                else -> null
+            }
+        }
+    }
+
+    fun restartPlayerPosition() {
+        _playerCell.value = mazeCells[0][0]
         invalidate()
     }
 
-    fun updatePlayersOnline(newPlayersOnline: List<Cell>){
+    fun updatePlayersOnline(newPlayersOnline: List<Cell>) {
         playersOnline.value = newPlayersOnline
         invalidate()
     }
 
     //Checks in order to not draw the current player when it draws all the online players
-    private fun notCurrentPlayer(onlinePlayer: Cell)= onlinePlayer.id != playerCell.value?.id
+    private fun notCurrentPlayer(onlinePlayer: Cell) = onlinePlayer.id != playerCell.value?.id
 }
