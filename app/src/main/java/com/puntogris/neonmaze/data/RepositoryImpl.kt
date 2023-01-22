@@ -14,6 +14,7 @@ import com.puntogris.neonmaze.utils.Constants.PLAYERS_COLLECTION
 import com.puntogris.neonmaze.utils.Constants.ROW_FIELD
 import com.puntogris.neonmaze.utils.Constants.SEED_FIELD
 import com.puntogris.neonmaze.models.Seed
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -35,15 +36,16 @@ class RepositoryImpl @Inject constructor() : Repository {
         )
     }
 
-    override fun updatePlayerPosition(player: Cell) {
-        if (player.id.isNotEmpty()) {
+    override suspend fun updatePlayerPosition(player: Cell) {
+        with(Dispatchers.IO) {
             firestore.collection(PLAYERS_COLLECTION)
                 .document(player.id)
                 .update(COLUMN_FIELD, player.col, ROW_FIELD, player.row)
+                .await()
         }
     }
 
-    override suspend fun createPlayerFirestore(): Cell {
+    override suspend fun createPlayerFirestore(): Cell = with(Dispatchers.IO) {
         val ref = firestore.collection(PLAYERS_COLLECTION).document()
         val player = Cell(id = ref.id)
         ref.set(player).await()

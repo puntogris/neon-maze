@@ -10,7 +10,7 @@ interface Repository {
 
     fun getAllPlayers(): LiveData<List<Cell>>
 
-    fun updatePlayerPosition(player: Cell)
+    suspend fun updatePlayerPosition(player: Cell)
 
     fun deletePlayerFirestore(playerId: String)
 

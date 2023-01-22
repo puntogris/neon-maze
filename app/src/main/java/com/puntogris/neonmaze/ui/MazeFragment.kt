@@ -17,7 +17,6 @@ class MazeFragment : Fragment(R.layout.fragment_maze) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.updateDatabaseTimer.run()
         setupObservers()
     }
 
@@ -34,7 +33,6 @@ class MazeFragment : Fragment(R.layout.fragment_maze) {
 
     override fun onStop() {
         viewModel.deletePlayer()
-        viewModel.stopTimer()
         super.onStop()
     }
 }
